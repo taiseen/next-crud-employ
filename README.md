@@ -23,7 +23,17 @@ yarn dev
 ```
 
 ## Yarn | Package Installed
-* yarn add react-icons [Icons For UI][icons]
+* yarn add react-icons ====== [Icons For UI][icons]
+* yarn add -D mongoose
+
+[icons]: https://react-icons.github.io/react-icons
 
 
-[icons] : https://react-icons.github.io/react-icons
+
+## Learning Points
+* Radio Button Customization By TailwindCSS
+
+
+
+
+

@@ -1,4 +1,5 @@
 import { BiEdit, BiTrashAlt } from 'react-icons/bi';
+import data from '../data/database.json';
 
 // This <Component /> call from 🟨 index.js 🟨
 export default function Table() {
@@ -10,7 +11,7 @@ export default function Table() {
             <thead>
 
                 {/* 🟨🟨🟨 Row 🟨🟨🟨 */}
-                <tr className='bg-gray-800'>
+                <tr className='bg-gray-800 w-fit'>
 
                     {/* 🟨🟨🟨 Column's 🟨🟨🟨 */}
                     <th className='px-16 py-2'>
@@ -37,39 +38,45 @@ export default function Table() {
 
             {/* 🟨🟨🟨 Table Body 🟨🟨🟨 */}
             <tbody className='bg-gray-300'>
-
-                <tr className='bg-gray-100 text-center'>
-                    <td className='px-16 py-2 flex items-center'>
-                        <img src="#" alt="" />
-                        <span className='text-center ml-2 font-semibold'>Img + User Name</span>
-                    </td>
-                    <td className='px-16 py-2'>
-                        <span>taiseen@gmail.com</span>
-                    </td>
-                    <td className='px-16 py-2'>
-                        <span>$25000</span>
-                    </td>
-                    <td className='px-16 py-2'>
-                        <span>10-05-2022</span>
-                    </td>
-                    <td className='px-16 py-2'>
-                        <button className='cursor-pointer'>
-                            <span className='bg-green-500 px-5 py-1 rounded-full text-white'>Active</span>
-                        </button>
-                    </td>
-                    <td className='px-16 py-2 flex items-center justify-around bg-green-400'>
-                        <button className='cursor-pointer'>
-                            <BiEdit size={25} color={"rgb(35,200,95)"} />
-                        </button>
-                        <button className='cursor-pointer'>
-                            <BiTrashAlt size={25} color={"rgb(245,65,95)"} />
-                        </button>
-                    </td>
-                </tr>
-
+                {
+                    data.map((person, i) => <TableRow key={i} {...person} />)
+                }
             </tbody>
 
         </table>
     )
 }
 
+const TableRow = ({ id, name, avatar, email, salary, date, status }) => {
+
+    return (
+        <tr className='bg-gray-100 text-center' >
+            <td className='px-16 py-2 flex items-center'>
+                <img src={avatar || "#"} alt="userImage" />
+                <span className='text-center ml-2 font-semibold'>{name || 'Unknown'}</span>
+            </td>
+            <td className='px-16 py-2'>
+                <span>{email || 'Unknown'}</span>
+            </td>
+            <td className='px-16 py-2'>
+                <span>${salary || '00'}</span>
+            </td>
+            <td className='px-16 py-2'>
+                <span>{date || 'Unknown'}</span>
+            </td>
+            <td className='px-16 py-2'>
+                <button className='cursor-pointer'>
+                    <span className='bg-green-500 px-5 py-1 rounded-full text-white'>{status || 'Unknown'}</span>
+                </button>
+            </td>
+            <td className='px-16 py-2 space-x-2 '>
+                <button className='cursor-pointer'>
+                    <BiEdit size={25} color={"rgb(35,200,95)"} />
+                </button>
+                <button className='cursor-pointer'>
+                    <BiTrashAlt size={25} color={"rgb(245,65,95)"} />
+                </button>
+            </td>
+        </tr >
+    )
+}
