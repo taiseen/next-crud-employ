@@ -1,6 +1,9 @@
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { addUser } from '../lib/crudHelper';
 import { BiPlus } from 'react-icons/bi';
-import { useReducer } from 'react';
 import { SuccessSMS, ErrorSMS } from '.';
+import { useReducer } from 'react';
+import Spinner from './Spinner';
 
 
 const formReducer = (state, event) => {
@@ -20,6 +23,11 @@ export default function Form() {
     // const [] = useReducer(() => { }, {});
     const [formData, setFormData] = useReducer(formReducer, {});
 
+    const addMutation = useMutation(addUser, {
+        onSuccess: () => {
+            console.log('data input');
+        }
+    });
 
     /*  
         input value's ==> into Object{ }
@@ -51,10 +59,24 @@ export default function Form() {
         // prevent user submit empty form data...
         if (Object.keys(formData).length === 0) return console.log("Don't Have Form Data")
 
+
+        let { firstName, lastName, email, salary, date, status } = formData;
+
+        const model = {
+            name: firstName + ' ' + lastName,
+            avatar: `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 10)}.jpg`,
+            email,
+            salary,
+            date,
+            status: status ?? 'active',
+        }
+
+        addMutation.mutate(model);
     }
 
     // if (Object.keys(formData).length > 0) return <SuccessSMS message='Data Added' />
     if (Object.keys(formData).length > 0) return <ErrorSMS message='Error' />
+    if (addMutation.isLoading) return <Spinner />
 
 
 
@@ -121,7 +143,7 @@ export default function Form() {
                         name='status'
                         value='active'
                         id='radioDefault1'
-                        className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 focus:outline-none transition duration-100 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
+                        className='radioStyle checked:bg-green-500 checked:border-green-500'
                         onChange={setFormData}
                     />
                     <label
@@ -137,7 +159,7 @@ export default function Form() {
                         name='status'
                         value='inactive'
                         id='radioDefault2'
-                        className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-red-500 checked:border-red-500 focus:outline-none transition duration-100 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
+                        className='radioStyle checked:bg-red-500 checked:border-red-500'
                         onChange={setFormData}
                     />
                     <label
