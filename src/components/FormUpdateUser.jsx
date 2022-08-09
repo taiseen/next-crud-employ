@@ -1,60 +1,60 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUser, getUsers, updateUser } from '../lib/crudHelper';
+import { SuccessSMS, ErrorSMS, Spinner } from '.';
 import { BiEraser } from 'react-icons/bi';
-import { useReducer } from 'react';
-import { SuccessSMS, ErrorSMS } from '.';
-
-
-const formReducer = (state, event) => {
-
-    const { name, value } = event.target;
-
-    return {
-        ...state, [name]: value
-    }
-}
 
 
 // This <Component /> call from 🟨 index.js 🟨
-export default function Form() {
+export default function FormUpdateUser({ formId, formData, setFormData }) {
+
+    const queryClient = useQueryClient();
+
+    // for data fetching, backend data calling...
+    const { isLoading, isError, data, error } = useQuery(['users', formId], () => getUser(formId));
 
 
-    // const [] = useReducer(() => { }, {});
-    const [formData, setFormData] = useReducer(formReducer, {});
+    // react query mutation for update backend data... POST | PUT | DELETE 
+    const updateMutation = useMutation((newData) => updateUser(formId, newData), {
+        onSuccess: async (data) => {
+            // update the Table UI Data...
+            // queryClient.setQueryData(['users'], (oleValue) => [data]);
+            queryClient.prefetchQuery(['users'], getUsers);
+        }
+    });
 
 
-    /*  
-        input value's ==> into Object{ }
-
-        we can get the data from this form,
-        when we click on this "add button", 
-        so we need to get the data of this input text boxes in the form of {Object},
-        so we can pass that {Object} to the backend &
-        store that data as a new record in the Database.
-    */
+    if (isLoading) return <Spinner />
+    if (isError) return <div className='text-lg text-red-700 text-center py-3'>Got Error - {error}</div>
 
 
-    /*  
-        get input value's dynamically ==> setFormData() 
-        
-        by type something inside first name input text box, 
-        that is going to call ==> setFormData() function & 
-        this setFormData() function is going to create a property called firstName,
-        and then it's going to get the value of this input text box 
-        and pass that value into firstName property...
-        spread operator are going to override the previous value...
-    */
+    // these data come from backend
+    const { name, email, salary, date, status } = data;
+    const [firstName, lastName] = name ? name.split(' ') : formData;
 
 
-    const handleSubmit = (e) => {
+    // user form Update by this function, when user edit its info...
+    const handleSubmit = async (e) => {
         // stop browser to reloading...
         e.preventDefault();
 
         // prevent user submit empty form data...
-        if (Object.keys(formData).length === 0) return console.log("Don't Have Form Data")
+        // if (Object.keys(formData).length === 0) return window.alert("Don't Have Form Data");
 
+        let userName = `${formData.firstName ?? firstName} ${formData.lastName ?? lastName}`
+
+        let updatedObject = Object.assign({}, data, formData, { name: userName });
+        // data.name = 'admin', formData.name = 'client', 
+        // data.name = 'client' [override it's values...]  
+
+
+        console.log(updatedObject);
+
+        await updateMutation.mutate(updatedObject);
     }
 
+
     // if (Object.keys(formData).length > 0) return <SuccessSMS message='Data Added' />
-    if (Object.keys(formData).length > 0) return <ErrorSMS message='Error' />
+    // if (Object.keys(formData).length > 0) return <ErrorSMS message='Error' />
 
 
 
@@ -67,6 +67,7 @@ export default function Form() {
                 <input
                     type="text"
                     name='firstName'
+                    defaultValue={firstName}
                     placeholder='First Name'
                     className='border w-full px-5 py-3 focus:outline-none rounded-md'
                     onChange={setFormData}
@@ -77,6 +78,7 @@ export default function Form() {
                 <input
                     type="text"
                     name='lastName'
+                    defaultValue={lastName}
                     placeholder='Last Name'
                     className='border w-full px-5 py-3 focus:outline-none rounded-md'
                     onChange={setFormData}
@@ -87,6 +89,7 @@ export default function Form() {
                 <input
                     type="email"
                     name='email'
+                    defaultValue={email}
                     placeholder='Email'
                     className='border w-full px-5 py-3 focus:outline-none rounded-md'
                     onChange={setFormData}
@@ -97,6 +100,7 @@ export default function Form() {
                 <input
                     type="text"
                     name='salary'
+                    defaultValue={salary}
                     placeholder='Salary'
                     className='border w-full px-5 py-3 focus:outline-none rounded-md'
                     onChange={setFormData}
@@ -107,7 +111,8 @@ export default function Form() {
                 <input
                     type="date"
                     name='date'
-                    placeholder='Salary'
+                    defaultValue={date}
+                    placeholder='Date'
                     className='border px-5 py-3 focus:outline-none rounded-md'
                     onChange={setFormData}
                 />
@@ -121,6 +126,7 @@ export default function Form() {
                         name='status'
                         value='active'
                         id='radioDefault1'
+                        defaultChecked={status == 'active'}
                         className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-green-500 checked:border-green-500 focus:outline-none transition duration-100 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
                         onChange={setFormData}
                     />
@@ -137,6 +143,7 @@ export default function Form() {
                         name='status'
                         value='inactive'
                         id='radioDefault2'
+                        defaultChecked={status !== 'active'}
                         className='form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-red-500 checked:border-red-500 focus:outline-none transition duration-100 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
                         onChange={setFormData}
                     />

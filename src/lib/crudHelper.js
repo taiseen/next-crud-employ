@@ -37,7 +37,7 @@ export const addUser = async (formData) => {
             body: JSON.stringify(formData)
         }
 
-        const response = await fetch(`${BASE_URL}api/users`, Options)
+        const response = await fetch(`${BASE_URL}/api/users`, Options)
         const json = await response.json()
 
         return json;
@@ -56,7 +56,7 @@ export const updateUser = async (userId, formData) => {
         body: JSON.stringify(formData)
     }
 
-    const response = await fetch(`${BASE_URL}api/users/${userId}`, Options)
+    const response = await fetch(`${BASE_URL}/api/users/${userId}`, Options)
     const json = await response.json()
     return json;
 }
@@ -70,7 +70,7 @@ export const deleteUser = async (userId) => {
         headers: { 'Content-Type': "application/json" },
     }
 
-    const response = await fetch(`${BASE_URL}api/users/${userId}`, Options)
+    const response = await fetch(`${BASE_URL}/api/users/${userId}`, Options)
     const json = await response.json()
     return json;
 }

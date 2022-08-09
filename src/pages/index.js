@@ -1,12 +1,45 @@
+import { BiUserPlus, BiX, BiCheck } from 'react-icons/bi';
+import { useDispatch, useSelector } from 'react-redux';
+import { useQueryClient } from '@tanstack/react-query';
+import { deleteAction, toggleChangeAction } from '../redux/reducer';
+import { deleteUser, getUsers } from '../lib/crudHelper';
 import { Form, Table } from '../components';
-import { BiUserPlus } from 'react-icons/bi';
-import { useState } from 'react';
 import Head from 'next/head'
 
 
 const Home = () => {
 
-  const [visible, setVisible] = useState(false);
+  // for updating data/records... use this lib...
+  const queryClient = useQueryClient();
+
+  // read ==> operation at redux store... state...
+  const visible = useSelector(state => state.app.client.toggleFrom);
+  const deleteId = useSelector(state => state.app.client.deletedId);
+
+  // write ==> operation at redux store... state...
+  const dispatch = useDispatch();
+
+  // by user click, change Redux store state data...
+  const handler = () => dispatch(toggleChangeAction())
+
+
+  const deleteHandler = async () => {
+
+    console.log(deleteId)
+
+    if (deleteId) {
+      await deleteUser(deleteId);
+      await queryClient.prefetchQuery(['users'], getUsers);
+      await dispatch(deleteAction(null));
+    }
+  }
+
+
+  const cancelHandler = async () => {
+    await dispatch(deleteAction(null));
+    console.log('cancel delete');
+  }
+
 
   return (
     <section>
@@ -24,12 +57,17 @@ const Home = () => {
 
           <div className="left flex gap-3">
 
-            <button onClick={() => setVisible(pre => !pre)} className='px-4 py-2 flex bg-indigo-500 text-white border rounded-md hover:bg-gray-50 hover:border-indigo-500 hover:text-gray-800 duration-200'>
+            <button onClick={handler} className='px-4 py-2 flex bg-indigo-500 text-white border rounded-md hover:bg-gray-50 hover:border-indigo-500 hover:text-gray-800 duration-200'>
               Add Employee <span className='pl-2'> <BiUserPlus size={22} /></span>
             </button>
 
           </div>
 
+          {
+            deleteId
+              ? DeleteComponent({ deleteHandler, cancelHandler })
+              : null
+          }
         </div>
 
 
@@ -38,11 +76,9 @@ const Home = () => {
         }
 
 
-
         <div className="container mx-auto">
           <Table />
         </div>
-
 
       </main>
 
@@ -50,4 +86,42 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;
+
+
+
+
+
+
+const DeleteComponent = ({ deleteHandler, cancelHandler }) => {
+
+  return (
+    <div className='flex gap-5 items-center'>
+      <p>Are you sure?</p>
+
+      <button
+        className='flex items-center bg-red-600 text-white px-4 py-2 rounded-md hover:bg-rose-500 hover:border-red-500 hover:text-gray-50'
+        onClick={deleteHandler}
+      >
+        Yes
+        <span className='pl-1'>
+          <BiCheck color='rgb(255,255,255)' size={24} />
+        </span>
+
+      </button>
+
+
+      <button
+        className='flex items-center bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-500 hover:border-green-500 hover:text-gray-50'
+        onClick={cancelHandler}
+      >
+        No
+        <span className='pl-1'>
+          <BiX color='rgb(255,255,255)' size={24} />
+        </span>
+
+      </button>
+
+    </div>
+  )
+}

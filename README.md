@@ -1,10 +1,8 @@
 06 - Agu - 2022
 
-## CRUD Employ 
+## CRUD Employ | [Live Link][link]
 
 # NextJs + TailwindCSS + Redux Query
-
-
 
 ## Project Installing Commands
 ``` 
@@ -23,15 +21,13 @@ yarn dev
 ```
 
 ## Yarn | Package Installed
-* yarn add react-icons ==== [Icons For UI][icons]
-* yarn add -D mongoose ==== Mongo DB connection 
-* yarn add @tanstack/react-query ====  Hooks for fetching, caching & updating asynchronous data in React.
-* yarn add react-redux
-* yarn add @reduxjs/toolkit
-
-
-[icons]: https://react-icons.github.io/react-icons
-
+|No| Package Installs                   | Usage for                 |
+|--|------------------------------------|---------------------------|
+| 1| yarn add `react-icons`             | [Icons For UI][icons]     |
+| 2| yarn add `-D` `mongoose`           | Mongo DB connection       |
+| 3| yarn add `@tanstack/react-query`   | Hooks for fetching, caching & updating asynchronous data in React. |
+| 4| yarn add `react-redux`             | enable your components to interact with the Redux store     |
+| 5| yarn add `@reduxjs/toolkit`        | helps configuring Redux store and reduces boilerplate       |
 
 
 ## Learning Points
@@ -45,3 +41,7 @@ If you need to remove a single file from the staging area, use
 
 git reset HEAD -- <fileName>
 ```
+
+
+[icons]: https://react-icons.github.io/react-icons
+[link]: https://next-crud-employ.vercel.app

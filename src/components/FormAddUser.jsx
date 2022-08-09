@@ -1,31 +1,20 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { addUser } from '../lib/crudHelper';
-import { BiPlus } from 'react-icons/bi';
+import { addUser, getUser } from '../lib/crudHelper';
 import { SuccessSMS, ErrorSMS } from '.';
-import { useReducer } from 'react';
+import { BiPlus } from 'react-icons/bi';
 import Spinner from './Spinner';
 
 
-const formReducer = (state, event) => {
-
-    const { name, value } = event.target;
-
-    return {
-        ...state, [name]: value
-    }
-}
-
 
 // This <Component /> call from 🟨 index.js 🟨
-export default function Form() {
+export default function FormAddUser({ formData, setFormData }) {
 
+    const queryClient = useQueryClient();
 
-    // const [] = useReducer(() => { }, {});
-    const [formData, setFormData] = useReducer(formReducer, {});
-
+    // by using this useMutation hook ==> we can create, update, delete data...
     const addMutation = useMutation(addUser, {
         onSuccess: () => {
-            console.log('data input');
+            queryClient.prefetchQuery(['users'], getUser());
         }
     });
 
@@ -57,11 +46,14 @@ export default function Form() {
         e.preventDefault();
 
         // prevent user submit empty form data...
-        if (Object.keys(formData).length === 0) return console.log("Don't Have Form Data")
+        // if (Object.keys(formData).length === 0) return console.log("Don't Have Form Data")
+        if (Object.keys(formData).length === 0) return alert("Please do not submit empty form data")
 
 
+        // collect data from dataSource
         let { firstName, lastName, email, salary, date, status } = formData;
 
+        // create an Object for data & send it to server...
         const model = {
             name: firstName + ' ' + lastName,
             avatar: `https://randomuser.me/api/portraits/men/${Math.floor(Math.random() * 10)}.jpg`,
@@ -71,12 +63,15 @@ export default function Form() {
             status: status ?? 'active',
         }
 
+        // send all the values...
         addMutation.mutate(model);
     }
 
-    // if (Object.keys(formData).length > 0) return <SuccessSMS message='Data Added' />
-    if (Object.keys(formData).length > 0) return <ErrorSMS message='Error' />
+
+
     if (addMutation.isLoading) return <Spinner />
+    if (addMutation.isSuccess) return <SuccessSMS message='Added Successfully' />
+    if (addMutation.isError) return <ErrorSMS message={addMutation.error.message} />
 
 
 
