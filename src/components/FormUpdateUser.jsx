@@ -30,7 +30,8 @@ export default function FormUpdateUser({ formId, formData, setFormData }) {
     // these data come from backend
     const { name, email, salary, date, status } = data;
     const [firstName, lastName] = name ? name.split(' ') : formData;
-
+    console.log(name && name);
+    console.log(name && name.split(' '));
 
     // user form Update by this function, when user edit its info...
     const handleSubmit = async (e) => {

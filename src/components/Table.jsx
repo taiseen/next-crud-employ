@@ -10,7 +10,9 @@ import Image from 'next/image';
 // This <Component /> call from 🟨 index.js 🟨
 export default function Table() {
 
+    // fetch data from backend - api call...
     const { isLoading, isError, data, error } = useQuery(['users'], getUsers);
+
 
     if (isLoading) return <Spinner />
     if (isError) return <div className='text-lg text-red-500 text-center py-3'>Got Error - {error}</div>
@@ -54,7 +56,7 @@ export default function Table() {
                 {
                     data.length
                         ? data.map(person => <TableRow key={person._id} {...person} />)
-                        : <h1>No data found</h1>
+                        : <h1 className='text-center text-red-600 text-xl font-bold'>No data found</h1>
                 }
             </tbody>
 

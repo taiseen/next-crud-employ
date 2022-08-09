@@ -1,5 +1,8 @@
-// const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://next-crud-employ.vercel.app';
+// for ==> offline / localHost
+// const BASE_URL = 'http://localhost:3000';                
+
+// for ==> online / live server at vercel 
+const BASE_URL = 'https://next-crud-employ.vercel.app';     
 
 
 
